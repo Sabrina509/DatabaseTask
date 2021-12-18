@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     Switch switchIsActive;
     ListView listViewStudent;
     List<StudentModel> list;
+    ArrayAdapter arrayAdapter = new ArrayAdapter<StudentModel>(MainActivity.this, android.R.layout.simple_list_item_1,list);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter<StudentModel>(MainActivity.this, android.R.layout.simple_list_item_1,list);
+
 
         buttonViewAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,10 +75,15 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 list.remove(position);
                                 arrayAdapter.notifyDataSetChanged();
+                                DbHelper dbHelper = new DbHelper(MainActivity.this);
+                                dbHelper.deleteStudent(position);
                             }})
                         .setNegativeButton("Edit", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {dialog.dismiss();}}).show();
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }})
+                        .show();
             }
         });
     }
