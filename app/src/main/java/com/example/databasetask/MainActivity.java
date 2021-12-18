@@ -1,10 +1,13 @@
 package com.example.databasetask;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     EditText editName, editAge;
     Switch switchIsActive;
     ListView listViewStudent;
+    List<StudentModel> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,18 +52,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ArrayAdapter arrayAdapter = new ArrayAdapter<StudentModel>(MainActivity.this, android.R.layout.simple_list_item_1,list);
+
         buttonViewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DbHelper dbHelper = new DbHelper(MainActivity.this);
-                List<StudentModel> list = dbHelper.getAllStudents();
-                ArrayAdapter arrayAdapter = new ArrayAdapter<StudentModel>(MainActivity.this, android.R.layout.simple_list_item_1,list);
+                list = dbHelper.getAllStudents();
                 listViewStudent.setAdapter(arrayAdapter);
-
-
-
             }
         });
-
+        listViewStudent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Delete Record")
+                        .setMessage("Do you want to edit or delete this student?")
+                        .setCancelable(false)
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                list.remove(position);
+                                arrayAdapter.notifyDataSetChanged();
+                            }})
+                        .setNegativeButton("Edit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {dialog.dismiss();}}).show();
+            }
+        });
     }
 }

@@ -45,8 +45,7 @@ public class StudentModel {
 
     @Override
     public String toString() {
-        return "StudentModel{" +
-                "name='" + name + '\'' +
+        return " name: " + name + '\'' +
                 ", age=" + age +
                 ", isActive=" + isActive +
                 ", id=" + id +
